@@ -3,8 +3,13 @@ COPY ./pom.xml ./pom.xml
 RUN mvn dependency:go-offline -B
 COPY ./src ./src
 RUN mvn package -DskipTests
-FROM openjdk:11-jdk
-WORKDIR /my-project
-COPY --from=maven target/SpringBootRestApIHardcoded-0.0.1-SNAPSHOT ./
+
+FROM openjdk:11
+
+ARG JarFile=target/SpringBootRestApIHardcoded-0.0.1-SNAPSHOT.jar
+
+WORKDIR /opt/restapi
+
+COPY ${JarFile} restapi.jar
 EXPOSE 8001
-CMD ["java", "-jar", "./SpringBootRestApIHardcoded-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java","-jar","restapi.jar"]
